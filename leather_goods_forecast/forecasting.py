@@ -30,10 +30,17 @@ class LeatherGoodsForecast:
                 df[f'cos_{int(period)}_{n}'] = np.cos(2 * n * np.pi * df['day_of_year'] / period)
         return df
 
-    def _generate_holiday_df(self, start_date, end_date):
-        holiday_dates = [d for d in self.eu_holidays if start_date <= d <= end_date]
-        holiday_df = pd.DataFrame({'ds': pd.to_datetime(holiday_dates), 'holiday': 'EU_holiday'})
-        return holiday_df
+   def _generate_holiday_df(self, start_date, end_date):
+    # Convert Timestamps to date
+    start_date = start_date.date()
+    end_date = end_date.date()
+    holiday_dates = [d for d in self.eu_holidays if start_date <= d <= end_date]
+    holiday_df = pd.DataFrame({
+        'ds': pd.to_datetime(holiday_dates),
+        'holiday': 'EU_holiday'
+    })
+    return holiday_df
+
 
     def train_prophet(self, df):
         prophet_df = df[['date', 'demand']].copy()
